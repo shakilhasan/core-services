@@ -1,28 +1,35 @@
 const rabbitmq = require("../../rabitmq");
 const express = require('express');
 const app = express();
-const port = 3002;
+const port = 3001;
 // Express routes
 app.get('/', (req, res) => {
-    res.send('Hello, Express!');
+    res.send('Welcome to API service');
 });
 
 app.get('/publish', async (req, res) => {
     // Publishing a message
-    const exchangeName = 'my_exchange';
-    const routingKey = 'my_routing_key';
-    const message = 'Hello from API Microservice 2!';
-    await rabbitmq.publishMessage(exchangeName, routingKey, message);
-    res.send('Message published to RabbitMQ');
+    const exchangeName = 'api';
+    const routingKey = 'api.data';
+    // const message = 'Hello from API Microservice 1!';
+    // const message = JSON.stringify({
+    //     name:"hasan",
+    //     age:29
+    // })
+    // await rabbitmq.publishMessage(exchangeName, routingKey, message);
+    const message = await rabbitmq.publishMessageRPC( "user.info");
+    res.send(message);
 });
-app.get('/consume', async (req, res) => {
-    const exchangeName = 'my_exchange';
-    // Consuming messages
-    await rabbitmq.consumeMessage(exchangeName);
-    res.send('Message published to RabbitMQ');
-});
+// app.get('/consume', async (req, res) => {
+//     const exchangeName = 'event';
+//     // Consuming messages
+//     // const message = await rabbitmq.consumeMessage(exchangeName, "event.*");
+//     const message = await rabbitmq.consumeMessageRPC();
+//     res.send(message);
+// });
 
 // Start the Express server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+rabbitmq.consumeMessageRPC().then(d=>console.log()).catch(e=>console.log(e));
