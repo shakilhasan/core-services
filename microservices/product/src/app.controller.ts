@@ -21,8 +21,4 @@ export class AppController {
         this.appService.handleOrderCreated(data);
     }
 
-    onModuleInit() {
-        this.authClient.subscribeToResponseOf('get_user');
-    }
-
 }

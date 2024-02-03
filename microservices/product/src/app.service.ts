@@ -20,4 +20,7 @@ export class AppService {
           );
         });
   }
+    onModuleInit() {
+        this.authClient.subscribeToResponseOf('get_user');
+    }
 }
